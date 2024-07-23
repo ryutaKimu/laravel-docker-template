@@ -4,69 +4,71 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TodoRequest;
 use App\Todo;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class TodoController extends Controller
 {
 
-  private $todo;
+    private $todo;
 
-  public function __construct(Todo $todo)
-  {
-    $this->todo = $todo;
-  }
+    public function __construct(Todo $todo)
+    {
+        $this->todo = $todo;
+    }
 
 
-  public function index()
-  {
-    $todos = $this->todo->all();
+    public function index()
+    {
+        $todos = $this->todo->all();
+        dd($todos);
 
-    return view('todo.index', ['todos' => $todos]);
-  }
+        return view('todo.index', ['todos' => $todos]);
+    }
 
-  public function create()
-  {
-    return view('todo.create');
-  }
+    public function create()
+    {
+        return view('todo.create');
+    }
 
-  public function store(TodoRequest $request)
-  {
-    $inputs = $request->all();
-    $this->todo->fill($inputs);
-    $this->todo->save();
+    public function store(TodoRequest $request)
+    {
+        $inputs = $request->all();
+        $this->todo->fill($inputs);
+        $this->todo->save();
 
-    return redirect()->route('todo.index');
-  }
+        return redirect()->route('todo.index');
+    }
 
-  public function show($id)
-  {
-    $todo = $this->todo->find($id);
+    public function show($id)
+    {
 
-    return view('todo.show', ['todo' => $todo]);
-  }
+        $todo = $this->todo->find($id);
 
-  public function edit($id)
-  {
-    $todo = $this->todo->find($id);
+        return view('todo.show', ['todo' => $todo]);
+    }
 
-    return view('todo.edit', ['todo' => $todo]);
-  }
+    public function edit($id)
+    {
+        $todo = $this->todo->find($id);
 
-  public function update(TodoRequest $request, $id)
-  {
-    $inputs = $request->all();
-    $todo = $this->todo->find($id);
-    $todo->fill($inputs);
-    $todo->save();
+        return view('todo.edit', ['todo' => $todo]);
+    }
 
-    return redirect()->route('todo.show', $todo->id);
-  }
+    public function update(TodoRequest $request, $id)
+    {
+        $inputs = $request->all();
+        $todo = $this->todo->find($id);
+        $todo->fill($inputs);
+        $todo->save();
 
-  public function delete($id)
-  {
-    $todo = $this->todo->find($id);
-    $todo->delete();
+        return redirect()->route('todo.show', $todo->id);
+    }
 
-    return redirect()->route('todo.index');
-  }
+    public function delete($id)
+    {
+        $todo = $this->todo->find($id);
+        $todo->delete();
+
+        return redirect()->route('todo.index');
+    }
 }
